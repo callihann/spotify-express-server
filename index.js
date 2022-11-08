@@ -10,7 +10,6 @@ const app = express();
 // Express middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static('public'));
 
 // Handling the get request

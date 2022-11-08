@@ -6,18 +6,35 @@
         </head>
         <body>
         <h1>Spotify Web Playback SDK Quick Start</h1>
-        <button id="togglePlay">Toggle Play</button>
+        <p1 id="trackname">current song:</p1>
+        <p1 id="artistname">current song:</p1>
+        <img id="image" src="" />
 
+        <button id="togglePlay">Toggle Play</button>
         <script src="https://sdk.scdn.co/spotify-player.js"></script>
         <script>
                 window.onSpotifyWebPlaybackSDKReady = () => {
-                const token = 'BQBsQwHfuYtSAlHlBRhL0Cp7bkRaPg-HL0EbCG38XeSL--Q2a7NUBF53TiUkPhPGfGq3-L6m6Ou1iuspRUSfIyqLsIZCvLGFvnl_OeleBcAh3XOTONdMjQvpdWS8mi-hE67DklSt85vn2YQQ6KlGZy8SSmYy5NUQoXx6CLjF3fNuUZCyV1ZYgo2q74gGPRhOz92qbVO58efbwrDG1TUDRhQ';
-                const player = new Spotify.Player({
-                        name: 'Web Playback SDK Quick Start Player',
-                        getOAuthToken: cb => { cb(token); },
-                        volume: 0.5
+                        const token = 'BQAm18lAzd8ka_QaOjV4yIKeId_-uSSMMxV5GQARRwO0YgvErDLUhweZWDmZmXWRlR739bSqkUFSQnnLXiymb-Ez9PCcQtGBt5K9mlQicmqJoQIDT0S8rmf59z8DIe4qjNPoWv7ShwW-a1-1p1CGv91LgLIBB8G0Jnqa4fY3olPiLQW2XJnvEZtDMXIh6a3uBxvSmzj-ypSblD2uJPD1BMo';
+                        const player = new Spotify.Player({
+                                name: 'Web Playback SDK Quick Start Player',
+                                getOAuthToken: cb => { cb(token); },
+                                volume: 0.5
                 });
 
+                function update(changedStateEvent) {
+                        console.log(changedStateEvent);
+                        player.getCurrentState().then(state => {
+                        if (!state) {
+                                console.error('User is not playing music through the Web Playback SDK');
+                                return;
+                        }
+                                document.getElementById("trackname").innerHTML = state.track_window.current_track['name'];
+                                document.getElementById("artistname").innerHTML = state.track_window.current_track['artists'][0]['name'];
+                                console.log(state.track_window.current_track['album']['images'][0]['url'])
+                                document.getElementById("image").src=state.track_window.current_track['album']['images'][0]['url'];
+                        });
+                }
+                
                 // Ready
                 player.addListener('ready', ({ device_id }) => {
                         console.log('Ready with Device ID', device_id);
@@ -41,11 +58,14 @@
                 });
 
                 document.getElementById('togglePlay').onclick = function() {
-                player.togglePlay();
+                        player.togglePlay();
                 };
+
+                player.addListener('player_state_changed', update);
 
                 player.connect();
                 }
+                
         </script>
         </body>
 </html>
