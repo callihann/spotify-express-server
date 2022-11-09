@@ -1,14 +1,9 @@
 // Importing express module
-var express = require("express");
-var querystring = require('querystring');
-
-// Importing mongoose module
-var mongoose = require("mongoose");
-const { request } = require("http");
+import express from 'express';
+import got from 'got';
+import querystring from 'querystring';
 const port = 1337;
 const app = express();
-
-// Express middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -24,33 +19,49 @@ function randomString(length) {
  }
 randomString(4);
 
-// Handling the get request
 app.get("/player", (req, res) => {
         print(res)
         return res.redirect("player.html");
 });
 
-app.post("/callback", (req, res, client_secret) => {
+app.get("/auth", (req, res) => {
+        const code = req.query.code;
+        const state = req.query.state;
+        const cid = '273447d19d2041f7860098e36f9da364'
         var authOptions = {
                 url: 'https://accounts.spotify.com/api/token',
                 headers: {
-                  'Authorization': 'Basic ' + (new (client_id + ':' + client_secret).toString('base64'))
+                        'Authorization': 'Bearer ' + ((cid + ':' + code).toString('base64'))
                 },
                 form: {
-                  grant_type: 'client_credentials'
+                        grant_type: 'client_credentials'
                 },
                 json: true
         };
-        request.post(authOptions, function(error, response, body) {
-                if (!error && response.statusCode === 200) {
-                        var token = body.access_token
-                }
-})});
+        const {data} = got.post('https://accounts.spotify.com/api/token', {
+                headers: {
+                        'Authorization': `Bearer ${(cid + ':' + code).toString('base64')}`
+                },
+                form: {
+                        grant_type: 'client_credentials'
+                },
+                json: true
+        }).json();
+
+        res.send(data)
+        // request.post(authOptions, function(error, response, body) {
+        //         if (!error && response.statusCode === 200) {
+        //               var token = body.access_token
+        //                 res.send(token)
+        //         }
+        // res.send({'code':code, 'state': state}); 
+});
+
 
 app.get('/', function(req, res) {
         var state = randomString(16);
         var scope = 'user-read-private user-read-email app-remote-control user-modify-playback-state playlist-read-private playlist-read-collaborative';
-        var uri = 'http://localhost:1337/callback'
+        var uri = 'http://localhost:1337/auth'
         res.redirect('https://accounts.spotify.com/authorize?' +
                 querystring.stringify({
                         response_type: 'code',
