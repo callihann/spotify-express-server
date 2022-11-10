@@ -2,6 +2,8 @@
 import express, { query } from 'express';
 import querystring from 'querystring';
 import axios from 'axios';
+import * as dotenv from 'dotenv'
+dotenv.config()
 const port = 1337;
 const app = express();
 app.use(express.json());
@@ -24,34 +26,27 @@ app.get("/player", (req, res) => {
 
 app.get("/auth", (req, res) => {
         const code = req.query.code;
-        const state = req.query.state;
-        const client_id = '273447d19d2041f7860098e36f9da364'
-        const client_secret = 'cf14da35b6634da89a0593edf9f61237'
-        const redirect_uri = 'http://localhost:1337/auth'
-        const authorization_header = `Authorization: Basic ${(`client_id+':'+code`).toString('base64')}`
-        const url = 'https://accounts.spotify.com/api/token'
-
         axios({
                 method: 'post',
                 url: 'https://accounts.spotify.com/api/token',
                 data: querystring.stringify({
                         code: code,
-                        redirect_uri: redirect_uri,
+                        redirect_uri: process.env.REDIRECT_URI,
                         grant_type: 'authorization_code'
                 }),
                 headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Basic ${new Buffer.from(`${client_id}:${client_secret}`).toString('base64')}`
+                        'Authorization': `Basic ${new Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')}`
                 },
                 json: true
-              }).then(response => {
+                }).then(response => {
                         if (response.status === 200) {
                                 res.cookie('token', `${response.data["access_token"]}`)
                                 res.redirect("player");
                         } else {
-                                res.send(response);
+                                // res.send(response);
                         }
-              })
+                })
 });
 
 
