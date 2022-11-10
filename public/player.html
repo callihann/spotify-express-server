@@ -2,69 +2,96 @@
 <!DOCTYPE html>
 <html>
         <head>
-        <title>Spotify Web Playback SDK Quick Start</title>
+                <title>Spotify Web Playback</title>
         </head>
         <body>
-        <h1>Spotify Web Playback SDK Quick Start</h1>
-        <p1 id="trackname">current song:</p1>
-        <p1 id="artistname">current song:</p1>
-        <img id="image" src="" />
+                <h1>Spotify Player</h1>
+                <p1 id="trackname">current song:</p1>
+                <p1 id="artistname">current song:</p1>
+                <img id="image" src="" />
+                <button id="togglePlay">Toggle Play</button>
+                <button id="skip">Skip</button>
+                <button id="back">Back</button>
+                <input type="range" min="0" max="100" value="50" class="slider" id="volRange">
 
-        <button id="togglePlay">Toggle Play</button>
-        <script src="https://sdk.scdn.co/spotify-player.js"></script>
-        <script>
-                window.onSpotifyWebPlaybackSDKReady = () => {
-                        const token = 'AQCeTb-srSpc4I81vDmaF9al3jB1cd-iwrrN8_VMKZ5DJld6v7Qh1zJt6jlclgirrkPz2D9FY5Tg88fEckI09pJKGAUYyEDIfI-hN6VktoXxufVm2P6zZHw3GUlHZlYa349dSTBw5AocQJRTmN2-F7M01SBYJVw5MXHc1pfu2DG39v-ecVbXvuWp8MKLrbWECWjh8_2gYjHWXQBfTbIKYxwZdDRjGPzErw'
-                        const player = new Spotify.Player({
-                                name: 'Web Playback SDK Quick Start Player',
-                                getOAuthToken: cb => { cb(token); },
-                                volume: 0.5
-                });
-
-                function update(changedStateEvent) {
-                        console.log(changedStateEvent);
-                        player.getCurrentState().then(state => {
-                        if (!state) {
-                                console.error('User is not playing music through the Web Playback SDK');
-                                return;
+                <script src="https://sdk.scdn.co/spotify-player.js"></script>
+                <script>
+                        function getCookie(name) { // https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+                                var nameEQ = name + "=";
+                                var ca = document.cookie.split(';');
+                                for(var i=0;i < ca.length;i++) {
+                                        var c = ca[i];
+                                        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                                        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+                                }
+                                return null;
                         }
-                                document.getElementById("trackname").innerHTML = state.track_window.current_track['name'];
-                                document.getElementById("artistname").innerHTML = state.track_window.current_track['artists'][0]['name'];
-                                document.getElementById("image").src=state.track_window.current_track['album']['images'][0]['url'];
+
+                        window.onSpotifyWebPlaybackSDKReady = () => {
+                                const token = getCookie('token')
+                                const player = new Spotify.Player({
+                                        name: 'Spotify Web Player',
+                                        getOAuthToken: cb => { cb(token); },
+                                        volume: 0.5
                         });
-                }
-                
-                // Ready
-                player.addListener('ready', ({ device_id }) => {
-                        console.log('Ready with Device ID', device_id);
-                });
 
-                // Not Ready
-                player.addListener('not_ready', ({ device_id }) => {
-                        console.log('Device ID has gone offline', device_id);
-                });
+                        function update(changedStateEvent) {
+                                console.log(changedStateEvent);
+                                player.getCurrentState().then(state => {
+                                if (!state) {
+                                        console.error('User is not playing music through the Web Playback SDK');
+                                        return;
+                                }
+                                        document.getElementById("trackname").innerHTML = state.track_window.current_track['name'];
+                                        document.getElementById("artistname").innerHTML = state.track_window.current_track['artists'][0]['name'];
+                                        document.getElementById("image").src=state.track_window.current_track['album']['images'][0]['url'];
+                                });
+                        }
+                        
+                        var slider = document.getElementById("volRange");
+                        slider.oninput = function() {
+                                player.setVolume((document.getElementById("volRange").value)/100)
+                        }
 
-                player.addListener('initialization_error', ({ message }) => {
-                        console.error(message);
-                });
+                        // Ready
+                        player.addListener('ready', ({ device_id }) => {
+                                console.log('Ready with Device ID', device_id);
+                        });
 
-                player.addListener('authentication_error', ({ message }) => {
-                        console.error(message);
-                });
+                        // Not Ready
+                        player.addListener('not_ready', ({ device_id }) => {
+                                console.log('Device ID has gone offline', device_id);
+                        });
 
-                player.addListener('account_error', ({ message }) => {
-                        console.error(message);
-                });
+                        player.addListener('initialization_error', ({ message }) => {
+                                console.error(message);
+                        });
 
-                document.getElementById('togglePlay').onclick = function() {
-                        player.togglePlay();
-                };
+                        player.addListener('authentication_error', ({ message }) => {
+                                console.error(message);
+                        });
 
-                player.addListener('player_state_changed', update);
+                        player.addListener('account_error', ({ message }) => {
+                                console.error(message);
+                        });
 
-                player.connect();
-                }
-                
-        </script>
+                        document.getElementById('togglePlay').onclick = function() {
+                                player.togglePlay();
+                        };
+
+                        document.getElementById('skip').onclick = function() {
+                                player.nextTrack();
+                        };
+
+                        document.getElementById('back').onclick = function() {
+                                player.previousTrack();
+                        };
+
+                        player.addListener('player_state_changed', update);
+
+                        player.connect();
+                        }
+                        
+                </script>
         </body>
 </html>
