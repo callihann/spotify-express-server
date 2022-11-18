@@ -1,3 +1,5 @@
+var pos_slider = document.getElementById("position");   
+var slider = document.getElementById("volRange");
 
 function getCookie(name) { // https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
         var nameEQ = name + "=";
@@ -19,7 +21,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 });
 
 var currState = {}
-function update(changedStateEvent) {
+function update() {
         player.getCurrentState().then(state => {
         if (!state) {
                 console.error('User is not playing music through the Web Playback SDK');
@@ -40,26 +42,28 @@ function getStatePosition() { // https://github.com/spotify/web-playback-sdk/iss
                 return currState.position;
         }
         let position = currState.position + (performance.now() - currState.updateTime) / 1000;
+        // console.log("position: " + position + " " + "performance.now: " + currState.updateTime + " " + "currState.position: " + currState.position)
         return position > currState.duration ? currState.duration : position;
 }
 
 
-var slider = document.getElementById("volRange");
 slider.oninput = function() {
-        player.setVolume((document.getElementById("volRange").value)/100)
+        player.setVolume((document.getElementById("volRange").value) / 100)
 }
 
-var pos_slider = document.getElementById("position");   
-pos_slider.oninput = function() { // if the 
-        console.log((currState.duration) / pos_slider.value);
-        player.seek((currState.duration) / pos_slider.value);
+pos_slider.oninput = function() { 
+        /* not working
+        console.log(pos_slider.value)
+        console.log((currState.duration / 100) / pos_slider.value);
+        player.seek((currState.duration / 100) / pos_slider.value); */
 };
 
-setInterval(function() { updatePosition() }, 500);
+setInterval(function() { updatePosition() }, 1);
 function updatePosition() {
-        // console.log((getStatePosition() / currState.duration) * 100)
-        document.getElementById("position").value = ((getStatePosition() / currState.duration) * 100);
+        const pos_val = getStatePosition()
+        document.getElementById("position").value = ((pos_val / currState.duration) * 100000);
 }
+
 // Ready
 player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
@@ -76,6 +80,7 @@ player.addListener('initialization_error', ({ message }) => {
 
 player.addListener('authentication_error', ({ message }) => {
         console.error(message);
+        window.location.replace("/");
 });
 
 player.addListener('account_error', ({ message }) => {
