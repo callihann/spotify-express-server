@@ -3,12 +3,21 @@
 <html>
         <head>
                 <title>Spotify Web Playback</title>
+                <!-- I claim ownership of nothing; everything is stolen-->
+                <style>
+                        html{
+                                background-color: black;
+                        }
+                        #artistname, #trackname {
+                                color: white;
+                        }
+                </style>
         </head>
         <body>
                 <h1>Spotify Player</h1>
                 <p1 id="trackname">current song:</p1>
                 <p1 id="artistname">current song:</p1>
-                <img id="image" src="" />
+                <img id="image" src="" crossorigin="anonymou"/>
                 <button id="togglePlay">Toggle Play</button>
                 <button id="skip">Skip</button>
                 <button id="back">Back</button>
@@ -21,6 +30,7 @@
                         <input type="range" min="0" max="100" value="0" class="slider" id="position">
                 </div>
                 <script src="https://sdk.scdn.co/spotify-player.js"></script>
-                <script src="main.js"></script>
+                <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.js"></script>
+                <script src="public/main.js"></script>
         </body>
 </html>
