@@ -1,7 +1,6 @@
-var colorThief = new ColorThief();
 var pos_slider = document.getElementById("position");   
 var slider = document.getElementById("volRange");
-const img = new Image();
+var r = document.querySelector('html');
 
 function getCookie(name) { // https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
         var nameEQ = name + "=";
@@ -25,12 +24,16 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 function componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
-}
+      }
       
 function rgbToHex(r, g, b) {
         return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
-      
+
+function changeBackground(color) {
+        document.body.style.background = color;
+}
+     
 var currState = {}
 function update() {
         player.getCurrentState().then(state => {
@@ -45,15 +48,8 @@ function update() {
                 document.getElementById("trackname").innerHTML = state.track_window.current_track['name'];
                 document.getElementById("artistname").innerHTML = state.track_window.current_track['artists'][0]['name'];
                 document.getElementById("image").src=state.track_window.current_track['album']['images'][0]['url'];
-                img.addEventListener('load', function() {
-                        const out = colorThief.getColor(img);
-                        console.log(typeof Object.values(out));
-                        for (const i in Object(out)) {
-                                console.log(i);
-                        };
-                });
-                img.crossOrigin = 'Anonymous'
-                img.src = state.track_window.current_track['album']['images'][0]['url']                 
+                var v = new Vibrant(state.track_window.current_track['album']['images'][0]['url']);
+                v.getPalette((err, palette) => changeBackground(rgbToHex(palette['DarkMuted']['_rgb'][0], palette['DarkMuted']['_rgb'][1], palette['DarkMuted']['_rgb'][2])))
         });
 }
 
@@ -64,7 +60,6 @@ function getStatePosition() { // https://github.com/spotify/web-playback-sdk/iss
         let position = currState.position + (performance.now() - currState.updateTime) / 1000;
         return position > currState.duration ? currState.duration : position;
 }
-
 
 slider.oninput = function() {
         player.setVolume((document.getElementById("volRange").value) / 100)
@@ -122,13 +117,13 @@ document.getElementById('back').onclick = function() {
 player.addListener('player_state_changed', update);
 
 document.addEventListener("keypress", function onEvent(event) {
-        if (event.key == "D") {
+        if (event.key == "D" || event.key == "d") {
                 player.nextTrack();
         }
-        else if (event.key == "A") {
+        else if (event.key == "A" || event.key == "a") {
                 player.previousTrack();
         }
-        else if (event.key == "S") {
+        else if (event.key == "S" || event.key == "s" || event.key == "32") {
                 player.togglePlay();
         }
 });

@@ -7,14 +7,15 @@
                 <style>
                         html{
                                 background-color: black;
+                                text-align:center;
                         }
-                        #artistname, #trackname {
+                        #artistname, #trackname, #volText, #posText, #title {
                                 color: white;
                         }
                 </style>
         </head>
         <body>
-                <h1>Spotify Player</h1>
+                <h1 id="title">Spotify Player</h1>
                 <p1 id="trackname">current song:</p1>
                 <p1 id="artistname">current song:</p1>
                 <img id="image" src="" crossorigin="anonymou"/>
@@ -26,11 +27,11 @@
                         <input type="range" min="0" max="100" value="50" class="slider" id="volRange">
                 </div>
                 <div id="posDiv">
-                        <h1 id=""posText>position in song</h1>
+                        <h1 id="posText">position in song</h1>
                         <input type="range" min="0" max="100" value="0" class="slider" id="position">
                 </div>
                 <script src="https://sdk.scdn.co/spotify-player.js"></script>
-                <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.js"></script>
-                <script src="public/main.js"></script>
+                <script src="main.js"></script>
+                <script src="vibrant.js"></script>
         </body>
 </html>
