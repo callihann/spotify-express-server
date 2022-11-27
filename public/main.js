@@ -1,4 +1,3 @@
-var pos_slider = document.getElementById("position");   
 var slider = document.getElementById("volRange");
 var r = document.querySelector('html');
 
@@ -47,9 +46,12 @@ function update() {
                 currState.updateTime = performance.now()
                 document.getElementById("trackname").innerHTML = state.track_window.current_track['name'];
                 document.getElementById("artistname").innerHTML = state.track_window.current_track['artists'][0]['name'];
+                document.getElementById("artistname").href = 'http://open.spotify.com/artist/' + (state.track_window.current_track['artists'][0]['uri']).replace('spotify:artist:', '')
                 document.getElementById("image").src=state.track_window.current_track['album']['images'][0]['url'];
+
                 var v = new Vibrant(state.track_window.current_track['album']['images'][0]['url']);
                 v.getPalette((err, palette) => changeBackground(rgbToHex(palette['DarkMuted']['_rgb'][0], palette['DarkMuted']['_rgb'][1], palette['DarkMuted']['_rgb'][2])))
+                document.getElementById("progress-bar").style.width = "0%";
         });
 }
 
@@ -65,18 +67,14 @@ slider.oninput = function() {
         player.setVolume((document.getElementById("volRange").value) / 100)
 }
 
-pos_slider.oninput = function() { 
-        /* not working
-        console.log(pos_slider.value)
-        console.log((currState.duration / 100) / pos_slider.value);
-        player.seek((currState.duration / 100) / pos_slider.value); */
-};
-
 setInterval(function() { updatePosition() }, 1);
 function updatePosition() {
-        const pos_val = getStatePosition()
-        // console.log((pos_val / currState.duration) * 100000) logging command for debug
-        document.getElementById("position").value = ((pos_val / currState.duration) * 100000);
+        const pos_val = getStatePosition();
+        if (100 < document.getElementById("progress-bar").style.width) {
+                document.getElementById("progress-bar").style.width = "0%";
+        }
+        document.getElementById("progress-bar").style.width = Math.trunc((pos_val / currState.duration) * 100000) + "%";
+        console.log(document.getElementById("progress-bar").style.width)
 }
 
 // Ready

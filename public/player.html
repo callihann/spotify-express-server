@@ -4,34 +4,66 @@
         <head>
                 <title>Spotify Web Playback</title>
                 <!-- I claim ownership of nothing; everything is stolen-->
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+                <link rel="stylesheet" href="css/custom_bootstrap.css"> `
                 <style>
                         html{
-                                background-color: black;
+                                background: black;
                                 text-align:center;
                         }
+                        html, body {margin: 0; height: 100%; overflow: hidden}
                         #artistname, #trackname, #volText, #posText, #title {
                                 color: white;
+                        }
+                        #title {
+                                font-family: 'Open Sans', sans-serif;
+                        }
+                        #image, #progress {
+                                box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;                        }
+                        #progress-bar {
+                                display: block;
+                                margin-right: auto;
+                        }
+                        #image {
+                                max-height: 40%;
+                                max-width: 40%;
+                        }
+                        #container {
+                                width: 10%;
                         }
                 </style>
         </head>
         <body>
                 <h1 id="title">Spotify Player</h1>
-                <p1 id="trackname">current song:</p1>
-                <p1 id="artistname">current song:</p1>
-                <img id="image" src="" crossorigin="anonymou"/>
-                <button id="togglePlay">Toggle Play</button>
-                <button id="skip">Skip</button>
-                <button id="back">Back</button>
-                <div id="volDiv">
-                        <h1 id="volText">volume</h1>
-                        <input type="range" min="0" max="100" value="50" class="slider" id="volRange">
+                <div class="d-flex flex-column">
+                        <p1 id="trackname"></p1>
+                        <a href="" target="_blank" rel="noopener noreferrer" id="artistname"></a>
+                        <div class="container">
+                                <img id="image" src="" crossorigin="anonymous"/>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                                <button id="back" type="button" class="btn btn-primary col-sm-1">Back</button>
+                                <button id="togglePlay" type="button" class="btn btn-primary col-sm-1">Play</button>
+                                <button id="skip" type="button" class="btn btn-primary col-sm-1">Skip</button>
+                        </div>
+                        <div id="volDiv">
+                                <h1 id="volText">volume</h1>
+                                <input type="range" min="0" max="100" value="50" class="slider" id="volRange">
+                        </div>
+                        <div class="progress position-relative position-absolute top-75 start-50 translate-middle" style="width: 50%">
+                                <div id="progress-bar" class="progress-bar" style="width: 100%"></div>
+                        </div>
                 </div>
-                <div id="posDiv">
-                        <h1 id="posText">position in song</h1>
-                        <input type="range" min="0" max="100" value="0" class="slider" id="position">
-                </div>
+
+                <!-- Dependencies -->
                 <script src="https://sdk.scdn.co/spotify-player.js"></script>
                 <script src="main.js"></script>
                 <script src="vibrant.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
         </body>
 </html>

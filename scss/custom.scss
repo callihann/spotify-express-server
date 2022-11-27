@@ -1,0 +1,10 @@
+$primary: #20d464;
+$secondary: #20d464;
+$position-values: (
+  0: 0,
+  50: 50%,
+  75: 75%,
+  100: 100%
+);
+
+@import "bootstrap/scss/bootstrap";
