@@ -45,9 +45,12 @@ app.get("/auth", (req, res) => {
                                 res.cookie('token', `${response.data["access_token"]}`)
                                 res.redirect("player");
                         } else {
-                                // res.send(response);
+                                res.send("There was an error processing your request. Please create an issue at https://github.com/callihann/spotify-express-server/issues");
                         }
                 })
+                .catch(function(error) {
+                        res.send("There was an error processing your request. Please create an issue at https://github.com/callihann/spotify-express-server/issues");
+                });
 });
 
 
