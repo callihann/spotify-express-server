@@ -126,4 +126,5 @@ document.addEventListener("keypress", function onEvent(event) {
 });
 
 player.connect();
+        console.log("Client connected!")
 }
