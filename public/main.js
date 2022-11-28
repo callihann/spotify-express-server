@@ -74,7 +74,6 @@ function updatePosition() {
                 document.getElementById("progress-bar").style.width = "0%";
         }
         document.getElementById("progress-bar").style.width = Math.trunc((pos_val / currState.duration) * 100000) + "%";
-        console.log(document.getElementById("progress-bar").style.width)
 }
 
 // Ready
