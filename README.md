@@ -8,6 +8,9 @@ To use simply:
 3. Run `npm run serve`. 
 4. Navigate to 127.0.0.1:1337 and login.
 
+### NOTE
+When setting up your Spotify app you MUST include the redirect uri `http://localhost:1337/auth`. If this is not used then this application will **not** work.
+
 ## Bugs
 There is a known bug with vibrant.js where monochromatic images throw an error because of the lack of all three color channels. Currently there has been no workaround implemented but has been planned. This bug should not significantly effect user experience. If any bugs are discovered that **significantly impact user experience** please submit an issue as this repository may not be actively maintained.
 
