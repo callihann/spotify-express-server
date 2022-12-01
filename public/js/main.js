@@ -1,5 +1,6 @@
-var slider = document.getElementById("volRange");
-var r = document.querySelector('html');
+let slider = document.getElementById("volRange");
+let r = document.querySelector('html');
+let init = 0;
 
 function getCookie(name) { // https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
         var nameEQ = name + "=";
@@ -32,7 +33,11 @@ function rgbToHex(r, g, b) {
 function changeBackground(color) {
         document.body.style.background = color;
 }
-     
+    
+function getRandomInt(max) { // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+        return Math.floor(Math.random() * max);
+}
+
 var currState = {}
 function update() {
         player.getCurrentState().then(state => {
@@ -50,7 +55,12 @@ function update() {
                 document.getElementById("image").src=state.track_window.current_track['album']['images'][0]['url'];
 
                 var v = new Vibrant(state.track_window.current_track['album']['images'][0]['url']);
-                v.getPalette((err, palette) => changeBackground(rgbToHex(palette['DarkMuted']['_rgb'][0], palette['DarkMuted']['_rgb'][1], palette['DarkMuted']['_rgb'][2])))
+                try {
+                        v.getPalette((err, palette) => changeBackground(rgbToHex(palette['DarkVibrant']['_rgb'][0], palette['DarkVibrant']['_rgb'][1], palette['DarkVibrant']['_rgb'][2])))
+                }
+                catch(err) {
+                        console.log(err)
+                }
                 document.getElementById("progress-bar").style.width = "0%";
         });
 }
@@ -120,11 +130,18 @@ document.addEventListener("keypress", function onEvent(event) {
         else if (event.key == "A" || event.key == "a") {
                 player.previousTrack();
         }
-        else if (event.key == "S" || event.key == "s" || event.key == "32") {
+        else if (event.key == "S" || event.key == "s") {
                 player.togglePlay();
+        }
+        else if (event.key == "Z" || event.key == "z") {
+                document.getElementById("volRange").value - 1
+                player.setVolume((document.getElementById("volRange").value) / 100);
+        }
+        else if (event.key == "X" || event.key == "x") {
+                document.getElementById("volRange").value + 1
+                player.setVolume((document.getElementById("volRange").value) / 100);
         }
 });
 
 player.connect();
-        console.log("Client connected!")
 }
