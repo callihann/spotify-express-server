@@ -57,13 +57,12 @@ app.get("/auth", (req, res) => {
 app.get('/', function(req, res) {
         var state = randomString(16);
         var scope = 'user-read-private user-read-email app-remote-control user-modify-playback-state playlist-read-private playlist-read-collaborative streaming';
-        var uri = 'http://localhost:1337/auth'
         res.redirect('https://accounts.spotify.com/authorize?' +
                 querystring.stringify({
                         response_type: 'code',
-                        client_id: '273447d19d2041f7860098e36f9da364',
+                        client_id: process.env.CLIENT_ID,
                         scope: scope,
-                        redirect_uri: uri,
+                        redirect_uri: process.env.REDIRECT_URI,
                         state: state
                 }));
       });
